@@ -218,3 +218,49 @@ View(dados)
 
 
 #? Filtrar todos os pokemons com bee ou bel no nome
+
+dados %>%
+  filter(grepl("[Bb]ee", name) | grepl("[Bb]el", name))
+
+dados %>%
+  filter(grepl("[Bb]ee|[Bb]el", name))
+
+dados %>%
+  filter(grepl("[Bb]e[el]", name))
+
+dados[grepl("[Bb]e[el]", dados$name),]
+
+grepl("[Bb]ee", dados$name)
+grepl("[Bb]el", dados$name)
+
+
+is.numeric(2)
+is.numeric("thomas")
+
+# para saber que existem
+
+f <- function(x, y, z){
+
+  return(paste("O valor de x é", ncol(x), "'e o valor de z é ", nrow(z)))
+
+}
+
+dados %>%
+  f(., 2, .)
+
+
+#? aplicar função em mais de uma variável/coluna
+
+dados %>%
+  mutate_if(is.numeric, scale) %>%
+  select_if(is.numeric) %>%
+  lm(height ~ weight, .)
+
+dados %>%
+  mutate(across(c('height', 'weight'), ~ scale(.)))
+
+dados %>%
+  mutate(across(contains("ght"), ~ scale(.)))
+
+dados %>%
+  summarise(across(contains("ght"), ~ mean(.)))
