@@ -87,7 +87,6 @@ df <- dados %>%
 #   "when": "positronConsoleFocused && editorLangId == 'r'"
 # }
 
-
 dados %>%
   group_by(type) %>%
   summarise(m = mean(height), s = sd(height))
