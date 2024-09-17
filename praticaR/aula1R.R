@@ -16,7 +16,6 @@ a <- 2
 
 a
 
-
 a <- 1
 b <- 2
 a+b
@@ -68,6 +67,14 @@ df <- dados %>%
   select(name, height, weight)%>%
   mutate(imc = weight/(height*height))
 
+dados %>% head
+  dados %>%
+  filter(height > 10) %>%
+  select(name, height, weight)%>%
+  mutate(imc = weight/(height*height)) %>% 
+  ggplot()+
+  geom_density(aes( x = imc))
+
  dados |> # pipe nativo do R
   filter(height > 10) %>%
   select(name, height, weight)%>%
@@ -87,13 +94,125 @@ df <- dados %>%
 #   "when": "positronConsoleFocused && editorLangId == 'r'"
 # }
 
+# magritt
 
+glimpse(dados)
+head(dados)
 dados %>%
-  group_by(type) %>%
+  group_by(type, secundary.type) %>%
   summarise(m = mean(height), s = sd(height))
 
 dados %>%
   group_by(type) %>%
-  mutate(m = mean(height), s = sd(height)) %>%
+  mutate(
+    m = mean(height),
+    s = sd(height)
+  ) %>%
   ungroup() %>%
   filter(height > m)
+
+
+dados %>%
+  group_by(type) %>%
+  mutate(
+    existe = any(grepl("saur", name))
+  )  %>% View()
+
+grepl("saur", "Venosaur")
+grepl("saur", "Charmander")
+grepl("saur", c("Venosaur", "Charmander")) %>% any()
+
+grepl("saur", "Charmander") # Regex
+
+x <- c("Venosaur", "BulbaSaur")
+grepl("[Ss]aur", x) # Regex
+
+x <- c(
+  "Amonia",
+  "Ferro",
+  "Dióxido de enxofre",
+  "Dioxido de Enxofre",
+  "Manganês",
+  "Dióxido  de  Enxofre",
+  "dioxido de  Enxofre",
+  "dioxidode  Enxofre"
+)
+
+# + um ou mais
+# * zero ou mais
+grepl("[Dd]i[óo]xido *de\\s+[eE]nxofre", x)
+
+n <- c("097.765.986-90", "123.765.98-37")
+grepl("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", n)
+
+grepl(".", c("a", "b", "c", "0", " "))
+
+dados %>% 
+filter(grepl("saur", name))
+
+# JOINS
+# Left, Right, Inner, Full
+
+df <- dados %>% 
+group_by(type) %>% 
+summarise(m = mean(height, na.rm=FALSE)) %>% 
+ungroup()
+
+left_join(dados, df, by = "type") %>% View
+
+
+df1 <- df %>% 
+filter(type != "grass") %>% 
+bind_rows(
+  data.frame(type = "thomas", m = 2)
+)
+
+# mantem da esquerda e joga fora da direita
+left_join(dados, df1, by = "type") %>% View
+# mantem da direita e joga fora da esquerda
+right_join(dados, df1, by = "type") %>% View
+# mantem só o que tem correspondencia
+inner_join(dados, df1, by = "type") %>% View
+# mantem tudo
+full_join(dados, df1, by = "type") %>% View
+
+
+df2 <- df1 %>% arrange(desc(type))
+
+bind_cols(df1, df2)
+bind_rows(df1, df2)
+
+df1 %>%
+rename(tipo = type) %>% 
+bind_rows(df2) %>% View
+
+
+# Com duas variaveis
+
+
+df <- dados %>% 
+group_by(type, secundary.type) %>% 
+summarise(m = mean(height, na.rm=FALSE)) %>% 
+ungroup()
+
+dados %>% 
+  left_join(df, by = c("type", "secundary.type")) %>% 
+  View
+
+dados %>% 
+  left_join(df) %>% 
+  View
+
+
+dados %>% filter(type == "bug")
+
+#! Cuidado com join
+#! cada combinaçao possível gera uma linha
+dados %>% 
+  left_join(df, by = "type") %>% 
+  View
+
+View(dados)
+
+
+#? Filtrar todos os pokemons com bee ou bel no nome
