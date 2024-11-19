@@ -37,3 +37,9 @@ my_add <- function(x, y){
 
 
 v + 1
+
+
+c(1, 2, 3) + 2
+
+x = 2
+ifelse(x == 1, "x igual a 1", "x diferente de 1")

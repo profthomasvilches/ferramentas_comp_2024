@@ -4,8 +4,6 @@
 using Plots
 using Random
 
-
-
 #? Referencia ótima!
 #? https://www.youtube.com/@doggodotjl
 
@@ -18,13 +16,11 @@ function check(x, v)
     x ∈ v
 end
 
-
 x = 2
 
-v = rand(1:10000, 100000000)
+v = rand(1:10000, 100000000);
 
 @time check(23, v)
-
 
 
 #! trabalhando
@@ -132,6 +128,7 @@ dog = Dict(
     "breed" => "egg-dog mix"
 )
 dog["name"]
+dog["age"]
 
 # dictionary part 2
 dog["name"] = "Doggo"
@@ -149,6 +146,10 @@ end
 dog1 = Dog("eggdog", 2, "egg-dog mix")
 dog1.name
 dog1.name = "Doggo"
+
+dog2 = Dog("Thor", 10, "pug")
+dog2.name
+
 # dog1.email = "doggo@doggo.doggo" does not work in Julia
 
 # array part 1
@@ -176,8 +177,14 @@ pop!(vector)
 vector
 matrix = [1 2 3; 4 5 6]
 
+vector .* 2
+
+# for(i = 0; i<3; i++)
+#     v[i] = v[i]+2
+
+
 # control flow (conditional)
-x = 1
+x = 3
 y = 2
 if x > y
     println("$x is greater than $y")
@@ -247,7 +254,7 @@ for i in array
 end
 
 # control flow (array/list comprehension)
-[i for i in 1:10]
+[i*2 for i in 1:10]
 
 # control flow (for/in loop over string)
 s = "Hello, World!"
@@ -354,6 +361,7 @@ typeof(:teste)
 
 f(x) = 2*x
 g(x) = x^2
+
 
 plot([f, g])
 
@@ -562,7 +570,7 @@ f(u, p, t) = p[1].*(1 .- u/p[2]).*u
 
 u0 = [2.0]
 tspan = [0, 20]
-p = [2.0, 1000]
+p = [2.0, 500]
 prob = ODEProblem(f, u0, tspan, p)
 
 
@@ -577,8 +585,8 @@ plot(sol,
 
 function f!(du, u, p, t)
     # 
-    du[1] = p[1]*u[1] - p[2]*u[1]*u[2]
-    du[2] = p[3]*u[1]*u[2] - p[4]*u[2]
+    du[1] = p[1]*u[1] - p[2]*u[1]*u[2] # dx/dt = αx-βxy
+    du[2] = p[3]*u[1]*u[2] - p[4]*u[2] # dy/dt = δxy-μy
     return du
 end
 
@@ -616,7 +624,7 @@ plot(solucao[:, 1], solucao[:, 2],
 )
 
 
-u0 = [5.0, 4.0]
+u0 = [2.001, 4.0]
 tspan = [0, 10]
 p = [10.0, 2.0, 1.5, 5.0]
 
@@ -639,14 +647,16 @@ function lorenz!(du,u,p,t)
     du[2] = u[1]*(28.0-u[3]) - u[2]
     du[3] = u[1]*u[2] - (8/3)*u[3]
 end
+
+
    u0 = [1.0;0.0;0.0]
    tspan = (0.0,100.0)
    prob = ODEProblem(lorenz!,u0,tspan)
    
    # Test that it worked
-   using OrdinaryDiffEq
-   sol = solve(prob,Tsit5())
-   using Plots; plot(sol,vars=(1,2,3))
+#    using OrdinaryDiffEq
+    sol = solve(prob,Tsit5())
+    plot(sol,vars=(1,2,3))
 
 
    
@@ -655,6 +665,14 @@ end
    prob = ODEProblem(lorenz!,u0,tspan)
    
    # Test that it worked
-   using OrdinaryDiffEq
+#    using OrdinaryDiffEq
    sol = solve(prob,Tsit5())
-   using Plots; plot!(sol,vars=(1,2,3))
+   plot!(sol,vars=(1,2,3))
+
+   #############################################
+
+   using TidierPlots
+
+   ggplot(iris)+
+   geom_point(@aes(x = SepalLength, y = SepalWidth, color = Species))+
+   theme_minimal()
